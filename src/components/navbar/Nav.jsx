@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useAllProducts from '../../url/productsApi';
 import User from '../../url/User';
 
 const Nav = () => {
 const navigate = useNavigate()
-  const [active, setActive] = useState('Home');
+const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userOpen, setuserOpen] = useState(false);
   const allProducts = useAllProducts()
   const user = User()
-
+  const [productLength, setproductLength] = useState(null)
+  useEffect(() => {
+    if (allProducts) {
+      setproductLength(allProducts.length || null)
+      
+    }
+  },)
   
-  const changeActive = (e) => {
-    setActive(e.target.innerText);
-    // console.log(user);
-  };
+
 
   const toggleSidebar = (e) => {
     setSidebarOpen(true);
@@ -108,12 +111,19 @@ document.addEventListener('click', function(event) {
                   id="dropdown-user"
                 >
                   <div className="px-4 py-3" role="none">
+                    {
+                      user && (
+<>
+
                     <p className="text-sm text-gray-900 dark:text-white" role="none">
                       {user.userName}
                     </p>
                     <p className="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
                       {user.email}
                     </p>
+</>
+                      )
+                    }
                   </div>
                   <ul className="py-1" role="none">
                     <li>
@@ -160,94 +170,94 @@ document.addEventListener('click', function(event) {
       >
         <div className="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
           <ul className="space-y-2 font-medium">
-            <li onClick={(e) => changeActive(e)}>
+            <li>
               <Link
                 to="/dashboard"
                 className={`flex items-center p-2 rounded-lg group ${
-                  active === 'Home' ? 'bg-blue-500 text-white' : ''
+                  location.pathname=='/dashboard' ? 'bg-blue-500 text-white' : ''
                 }`}
               >
                 <i
                   className={`fas fa-home w-5 h-5 text-gray-500 transition duration-75 ${
-                    active === 'Home' ? 'text-white' : ''
+                    location.pathname=='/dashboard' ? 'text-white' : ''
                   }`}
                 ></i>
                 <span className="ms-3">Home</span>
               </Link>
             </li>
-            <li onClick={(e) => changeActive(e)}>
+            <li>
               <Link
                 to="/dashboard/add-product"
                 className={`flex items-center p-2 rounded-lg group ${
-                  active === 'Add Product' ? 'bg-blue-500 text-white' : ''
+                  location.pathname=='/dashboard/add-product' ? 'bg-blue-500 text-white' : ''
                 }`}
               >
                 <i
                   className={`fas fa-plus-square w-5 h-5 text-gray-500 transition duration-75 ${
-                    active === 'Add Product' ? 'text-white' : ''
+                    location.pathname=='/dashboard/add-product' ? 'text-white' : ''
                   }`}
                 ></i>
                 <span className="flex-1 ms-3 whitespace-nowrap">Add Product</span>
               </Link>
             </li>
-            <li onClick={(e) => changeActive(e)}>
+            <li>
               <Link
                 to="/dashboard/products"
                 className={`flex items-center p-2 rounded-lg group ${
-                  active === 'Products' ? 'bg-blue-500 text-white' : ''
+                  location.pathname=='/dashboard/products' ? 'bg-blue-500 text-white' : ''
                 }`}
               >
                 <i
                   className={`fas fa-box w-5 h-5 text-gray-500 transition duration-75 ${
-                    active === 'Products' ? 'text-white' : ''
+                    location.pathname=='/dashboard/products' ? 'text-white' : ''
                   }`}
                 ></i>
                 <span className="flex-1 ms-3 whitespace-nowrap">Products</span>
                 <span className="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">
-                  {allProducts.length || 0}
+                  {productLength}
                 </span>
               </Link>
             </li>
-            <li onClick={(e) => changeActive(e)}>
+            <li>
               <Link
                 to="#"
                 className={`flex items-center p-2 rounded-lg group ${
-                  active === 'Sales' ? 'bg-blue-500 text-white' : ''
+                  location.pathname=='Sales' ? 'bg-blue-500 text-white' : ''
                 }`}
               >
                 <i
                   className={`fas fa-chart-line w-5 h-5 text-gray-500 transition duration-75 ${
-                    active === 'Sales' ? 'text-white' : ''
+                    location.pathname=='Sales' ? 'text-white' : ''
                   }`}
                 ></i>
                 <span className="flex-1 ms-3 whitespace-nowrap">Sales</span>
               </Link>
             </li>
-            <li onClick={(e) => changeActive(e)}>
+            <li>
               <Link
                 to="#"
                 className={`flex items-center p-2 rounded-lg group ${
-                  active === 'Inventory' ? 'bg-blue-500 text-white' : ''
+                  location.pathname=='Inventory' ? 'bg-blue-500 text-white' : ''
                 }`}
               >
                 <i
                   className={`fas fa-cubes w-5 h-5 text-gray-500 transition duration-75 ${
-                    active === 'Inventory' ? 'text-white' : ''
+                    location.pathname=='Inventory' ? 'text-white' : ''
                   }`}
                 ></i>
                 <span className="flex-1 ms-3 whitespace-nowrap">Inventory</span>
               </Link>
             </li>
-            <li onClick={(e) => changeActive(e)}>
+            <li>
               <Link
                 to="#"
                 className={`flex items-center p-2 rounded-lg group ${
-                  active === 'Reports' ? 'bg-blue-500 text-white' : ''
+                  location.pathname=='Reports' ? 'bg-blue-500 text-white' : ''
                 }`}
               >
                 <i
                   className={`fas fa-chart-bar w-5 h-5 text-gray-500 transition duration-75 ${
-                    active === 'Reports' ? 'text-white' : ''
+                    location.pathname=='Reports' ? 'text-white' : ''
                   }`}
                 ></i>
                 <span className="flex-1 ms-3 whitespace-nowrap">Reports</span>
@@ -257,12 +267,12 @@ document.addEventListener('click', function(event) {
               <Link
                 to="#"
                 className={`flex items-center p-2 rounded-lg group ${
-                  active === 'Log Out' ? 'bg-blue-500 text-white' : ''
+                  location.pathname=='Log Out' ? 'bg-blue-500 text-white' : ''
                 }`}
               >
                 <i
                   className={`fas fa-sign-out-alt w-5 h-5 text-gray-500 transition duration-75 ${
-                    active === 'Log Out' ? 'text-white' : ''
+                    location.pathname=='Log Out' ? 'text-white' : ''
                   }`}
                 ></i>
                 <span className="flex-1 ms-3 whitespace-nowrap">Log Out</span>

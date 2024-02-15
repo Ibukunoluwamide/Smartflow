@@ -10,8 +10,8 @@ const Login = () => {
    const [spinner, setspinner] = useState(false)
     const formik = useFormik({
         initialValues: {
-            username: 'admin',
-            password: 'admin'
+            username: '',
+            password: ''
         },
         onSubmit: (values) => {
             // console.log(values);

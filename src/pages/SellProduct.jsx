@@ -3,12 +3,14 @@ import axios from "axios";
 import { useFormik } from "formik";
 import backendUrl from "../url/backendUrl";
 import useAllProducts from "../url/productsApi";
+import Swal from "sweetalert2";
 
-const   ModifyProduct = () => {
+const   SellProduct = () => {
   const [close, setClose] = useState(true);
 
   const [products, setProducts] = useState(JSON.parse(localStorage['product'] || null)); 
-  
+  const [updateUnits, setupdateUnits] = useState(0)
+  const [updatePrice, setupdatePrice] = useState(0)
   // console.log(products);
   
   useEffect(() => {
@@ -20,19 +22,18 @@ const   ModifyProduct = () => {
     initialValues: {
       productID:  products.id,
       productName:  products.productName, 
-      purchasePrice:  products.purchasePrice,
-      pricePerUnit:  products.pricePerUnit,
-      units:  products.units,
-  
+      units:  "",
+      totalPrice: "",
+      unitsLeft: 0
     },
     onSubmit: (values) => {
       console.log(values);
-      axios.post(`${backendUrl}/modifyproduct.php`, values).then((result) => {
+      axios.post(`${backendUrl}/sellproduct.php`, values).then((result) => {
         console.log(result.data);
         if (result.data.status==true) {
           Swal.fire({
-            title: "Product Updated!",
-            // text: result.data.message,
+            title: "Product Sold!",
+            text: result.data.message,
             icon: "success",
             showConfirmButton: false,
             timer: 2000
@@ -47,6 +48,20 @@ const   ModifyProduct = () => {
       });
     },
   });
+
+  const updateUnitsLeft = ()=>{
+    if (formik.values.units > Number(products.unitsLeft)) {
+        alert('Sorry, there are not enough units left.');    
+        }else{
+            
+            setupdateUnits(Number(products.unitsLeft)-formik.values.units)
+            setupdatePrice(Number(products.pricePerUnit)*formik.values.units)
+            console.log(Number(products.unitsLeft));
+            console.log(formik.values.units);
+            console.log(updateUnits);
+            
+        }
+    }
   
   const closeBtn = ()=>{
     setClose(false)
@@ -55,7 +70,6 @@ const   ModifyProduct = () => {
   return (
     <div className="">
       <form onSubmit={formik.handleSubmit} className="">
-      <div className="md:grid grid-cols-2 gap-4">
       <div className="mb-2">
     <label
       className="block text-gray-700 text-sm font-bold mb-2"
@@ -69,21 +83,24 @@ const   ModifyProduct = () => {
       value={formik.values.productName}
       onChange={formik.handleChange}
       className="appearance-none border rounded w-full py-2 px-3"
+      disabled
       required
     />
   </div>
+
   <div className="mb-2">
     <label
       className="block text-gray-700 text-sm font-bold mb-2"
-      htmlFor="price"
+      htmlFor="units"
     >
-      Purchase Price
+      Sell Units 
     </label>
     <input
       type="number"
-      id="purchasePrice"
-      value={formik.values.purchasePrice}
+      id="units"
+      value={formik.values.units}
       onChange={formik.handleChange}
+      onKeyUp={updateUnitsLeft}
       className="appearance-none border rounded w-full py-2 px-3"
       required
     />
@@ -93,14 +110,16 @@ const   ModifyProduct = () => {
       className="block text-gray-700 text-sm font-bold mb-2"
       htmlFor="units"
     >
-      Units in Stock
+      Price (per unit)
     </label>
     <input
       type="number"
-      id="units"
-      value={formik.values.units}
+      id="price"
+      value={products.pricePerUnit}
       onChange={formik.handleChange}
+      onKeyUp={updateUnitsLeft}
       className="appearance-none border rounded w-full py-2 px-3"
+      disabled
       required
     />
   </div>
@@ -109,26 +128,41 @@ const   ModifyProduct = () => {
       className="block text-gray-700 text-sm font-bold mb-2"
       htmlFor="pricePerUnit"
     >
-      Price (per unit)
+    Total Price 
     </label>
     <input
       type="number"
-      id="pricePerUnit"
-      value={formik.values.pricePerUnit}
+      id="price"
+      value={updateUnits?formik.values.totalPrice=updatePrice:0}
       onChange={formik.handleChange}
       className="appearance-none border rounded w-full py-2 px-3"
-      required
+      disabled
+      />
+  </div>
+  <div className="mb-2">
+    <label
+      className="block text-gray-700 text-sm font-bold mb-2"
+      htmlFor="quantity"
+      >
+    Units Left
+    </label>
+    <input
+      type="text"
+      id="unitsLeft"
+      value={updateUnits?formik.values.unitsLeft=updateUnits:0}
+      onChange={formik.handleChange}
+      className="appearance-none border rounded w-full py-2 px-3"
+      disabled
     />
   </div>
- 
-      </div>
+  
       <div className="flex justify-end gap-4">
 
   <button
     type="submit"
     className="bg-blue-500 text-white py-2 px-4 rounded w-ful"
   >
-    Update Product
+    Sell Product
   </button>
       </div>
 </form>
@@ -137,4 +171,4 @@ const   ModifyProduct = () => {
   );
 };
 
-export default  ModifyProduct;
+export default  SellProduct;
