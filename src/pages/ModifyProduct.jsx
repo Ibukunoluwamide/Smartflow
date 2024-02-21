@@ -3,6 +3,7 @@ import axios from "axios";
 import { useFormik } from "formik";
 import backendUrl from "../url/backendUrl";
 import useAllProducts from "../url/productsApi";
+import Swal from "sweetalert2";
 
 const   ModifyProduct = () => {
   const [close, setClose] = useState(true);
@@ -22,6 +23,7 @@ const   ModifyProduct = () => {
       productName:  products.productName, 
       purchasePrice:  products.purchasePrice,
       pricePerUnit:  products.pricePerUnit,
+      unitsLeft:  products.unitsLeft,
       units:  products.units,
   
     },
@@ -99,6 +101,22 @@ const   ModifyProduct = () => {
       type="number"
       id="units"
       value={formik.values.units}
+      onChange={formik.handleChange}
+      className="appearance-none border rounded w-full py-2 px-3"
+      required
+    />
+  </div>
+  <div className="mb-2">
+    <label
+      className="block text-gray-700 text-sm font-bold mb-2"
+      htmlFor="pricePerUnit"
+    >
+      Units Left
+    </label>
+    <input
+      type="number"
+      id="unitsLeft"
+      value={formik.values.unitsLeft}
       onChange={formik.handleChange}
       className="appearance-none border rounded w-full py-2 px-3"
       required

@@ -9,7 +9,7 @@ const   SellProduct = () => {
   const [close, setClose] = useState(true);
 
   const [products, setProducts] = useState(JSON.parse(localStorage['product'] || null)); 
-  const [updateUnits, setupdateUnits] = useState(0)
+  const [updateUnits, setupdateUnits] = useState(products.unitsLeft)
   const [updatePrice, setupdatePrice] = useState(0)
   // console.log(products);
   
@@ -24,42 +24,45 @@ const   SellProduct = () => {
       productName:  products.productName, 
       units:  "",
       totalPrice: "",
-      unitsLeft: 0
+      unitsLeft: products.unitsLeft
     },
     onSubmit: (values) => {
       console.log(values);
-      axios.post(`${backendUrl}/sellproduct.php`, values).then((result) => {
-        console.log(result.data);
-        if (result.data.status==true) {
-          Swal.fire({
-            title: "Product Sold!",
-            text: result.data.message,
-            icon: "success",
-            showConfirmButton: false,
-            timer: 2000
-            })
-            setTimeout(() => {
-              window.location.reload()
-              
-            }, 2000);
-        }
-      }).catch((err) => {
-        console.log(err);
-      });
+      if (formik.values.units > Number(products.unitsLeft)) {
+        alert('Sorry, there are not enough units left.');    
+      }else{
+        axios.post(`${backendUrl}/sellproduct.php`, values).then((result) => {
+          console.log(result.data);
+          if (result.data.status==true) {
+            Swal.fire({
+              title: "Product Sold!",
+              text: result.data.message,
+              icon: "success",
+              showConfirmButton: false,
+              timer: 2000
+              })
+              setTimeout(() => {
+                window.location.reload()
+                
+              }, 2000);
+            }
+          }).catch((err) => {
+          console.log(err);
+        });
+
+      }
     },
   });
-
+  
   const updateUnitsLeft = ()=>{
     if (formik.values.units > Number(products.unitsLeft)) {
-        alert('Sorry, there are not enough units left.');    
+      alert('Sorry, there are not enough units left.');    
         }else{
-            
             setupdateUnits(Number(products.unitsLeft)-formik.values.units)
             setupdatePrice(Number(products.pricePerUnit)*formik.values.units)
-            console.log(Number(products.unitsLeft));
-            console.log(formik.values.units);
-            console.log(updateUnits);
-            
+            // console.log(Number(products.unitsLeft));
+            // console.log(formik.values.units);
+            // console.log(updateUnits);
         }
     }
   
